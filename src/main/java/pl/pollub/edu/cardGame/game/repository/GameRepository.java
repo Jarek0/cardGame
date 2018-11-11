@@ -22,7 +22,7 @@ import java.util.Optional;
 @Repository
 public interface GameRepository extends MongoRepository<Game, ObjectId>, QuerydslPredicateExecutor<Game>, QuerydslBinderCustomizer<QGame> {
 
-    @Query(value = "{ 'status' : 'OPEN', 'id' : ?0 }")
+    @Query(value = "{ 'status' : 'OPEN', '_id' : ?0 }")
     Optional<Game> findOpenById(ObjectId gameId);
 
     @Query(value = "{ 'status' : 'OPEN' }")

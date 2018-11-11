@@ -11,9 +11,10 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 import org.springframework.security.web.session.HttpSessionEventPublisher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import pl.pollub.edu.cardGame.authentication.filter.AuthenticationFilter;
@@ -21,7 +22,10 @@ import pl.pollub.edu.cardGame.authentication.handler.AuthenticationFailureHandle
 import pl.pollub.edu.cardGame.authentication.handler.AuthenticationSuccessHandler;
 import pl.pollub.edu.cardGame.authentication.handler.LogoutSuccessHandler;
 import pl.pollub.edu.cardGame.authentication.handler.RestAuthenticationEntryPoint;
+import pl.pollub.edu.cardGame.authentication.notifier.UserLogoutNotifier;
 import pl.pollub.edu.cardGame.authentication.provider.Authenticator;
+import pl.pollub.edu.cardGame.common.config.SessionListener;
+import pl.pollub.edu.cardGame.game.organization.destroyer.GameDestroyer;
 
 @Configuration
 @EnableWebSecurity
@@ -33,6 +37,8 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     private final Authenticator authenticator;
     private final ObjectMapper objectMapper;
+    private final GameDestroyer gameDestroyer;
+    private final UserLogoutNotifier userLogoutNotifier;
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
@@ -41,11 +47,11 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
+        return new SessionListener(gameDestroyer);
     }
 
     @Bean
-    public SessionRegistryImpl sessionRegistry() {
+    public SessionRegistry sessionRegistry() {
         return new SessionRegistryImpl();
     }
 
@@ -62,6 +68,8 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         authenticationFilter.setAuthenticationFailureHandler(authenticationFailureHandler());
         authenticationFilter.setRequiresAuthenticationRequestMatcher(new AntPathRequestMatcher(AUTH_PATH, HttpMethod.POST.name()));
         authenticationFilter.setAuthenticationManager(authenticationManagerBean());
+        authenticationFilter.setSessionAuthenticationStrategy(sessionAuthenticationStrategy());
+        authenticationFilter.setAllowSessionCreation(true);
         return authenticationFilter;
     }
 
@@ -80,21 +88,23 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
         return new LogoutSuccessHandler();
     }
 
+    @Bean
+    public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
+        return new SessionAuthenticationStrategyImpl(sessionRegistry(), userLogoutNotifier);
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(authenticator).passwordEncoder(passwordEncoder());
     }
 
     @Override
-    protected void configure(HttpSecurity http) throws Exception {
+    protected void configure(final HttpSecurity http) throws Exception {
         http.headers().cacheControl();
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, AUTH_PATH, "/api/authentication/registration").permitAll()
                 .anyRequest().authenticated();
-
-        http.csrf()
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 
         http.exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
@@ -110,13 +120,17 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .addFilterBefore(authenticationFilter(), AuthenticationFilter.class)
                 .logout()
+                .deleteCookies()
+                .invalidateHttpSession(true)
                 .permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher(AUTH_PATH, HttpMethod.DELETE.name()))
                 .logoutSuccessHandler(logoutSuccessHandler())
                 .and()
                 .sessionManagement()
-                .maximumSessions(1)
-                .sessionRegistry(sessionRegistry());
+                .sessionAuthenticationStrategy(sessionAuthenticationStrategy())
+                .maximumSessions(-1)
+                .sessionRegistry(sessionRegistry())
+                .maxSessionsPreventsLogin(true);
     }
 
 }

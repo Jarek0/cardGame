@@ -1,17 +1,18 @@
 package event;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 import static event.GameOrganizationEventType.PLAYER_JOINED;
 
-@Getter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PlayerJoinGameEvent extends GameOrganizationEvent {
 
-    private final String founderLogin;
+    private String founderLogin;
 
-    private final String playerLogin;
+    private String playerLogin;
 
     public PlayerJoinGameEvent(String founderLogin, String playerLogin, String gameId) {
         super(gameId, PLAYER_JOINED);

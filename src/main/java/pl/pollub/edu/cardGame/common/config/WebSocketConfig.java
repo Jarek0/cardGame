@@ -1,4 +1,4 @@
-package pl.pollub.edu.cardGame.game.config;
+package pl.pollub.edu.cardGame.common.config;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
@@ -10,12 +10,13 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 @Configuration
 @EnableWebSocketMessageBroker
-public class GameConfig implements WebSocketMessageBrokerConfigurer {
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     @Override
     public void configureMessageBroker(final MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/queue/game");
+        config.enableSimpleBroker("/queue", "/topic", "/user");
         config.setApplicationDestinationPrefixes("/api");
+        config.setUserDestinationPrefix("/user");
     }
 
     @Override

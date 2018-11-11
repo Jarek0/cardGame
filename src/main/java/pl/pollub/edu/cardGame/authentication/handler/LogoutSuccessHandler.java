@@ -1,6 +1,7 @@
 package pl.pollub.edu.cardGame.authentication.handler;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;

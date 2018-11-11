@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import command.LoginCommand;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 
 public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+
     private String login;
     private String password;
 
