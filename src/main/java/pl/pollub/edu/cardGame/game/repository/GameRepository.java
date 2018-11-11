@@ -28,7 +28,7 @@ public interface GameRepository extends MongoRepository<Game, ObjectId>, Queryds
     @Query(value = "{ 'status' : 'OPEN' }")
     Page<Game> findOpenGames(Pageable pageable);
 
-    @Query(value = "{ 'status' : { $ne : 'ENDED' }, 'playersLogin' : ?0 }")
+    @Query(value = "{ 'status' : { $ne : 'ENDED' }, 'players' : { $elemMatch : { 'login' : ?0 } } }")
     List<Game> findNotEndedByPlayerLogin(String playerLogin);
 
     @Query(value = "{ 'status' : { $ne : 'ENDED' } }")

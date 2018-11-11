@@ -14,9 +14,9 @@ public class GameCreator {
 
     private final GameRepository repository;
 
-    public void create() {
+    public Game create() {
         String currentUserLogin = authContext.getCurrentAuthLogin();
         Game game = new Game(currentUserLogin);
-        repository.save(game);
+        return repository.save(game);
     }
 }

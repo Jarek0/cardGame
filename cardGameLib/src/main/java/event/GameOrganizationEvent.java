@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = GameClosedEvent.class, name = "GameClosedEvent"),
-        @JsonSubTypes.Type(value = PlayerJoinGameEvent.class, name = "PlayerJoinGameEvent")
+        @JsonSubTypes.Type(value = GameStartedEvent.class, name = "GameStartedEvent")
 })
 abstract class GameOrganizationEvent extends CardGameEvent {
 
@@ -25,7 +25,7 @@ abstract class GameOrganizationEvent extends CardGameEvent {
     private String gameId;
 
     GameOrganizationEvent(String gameId, GameOrganizationEventType eventType) {
-        super("/game/queue/" + gameId);
+        super("/queue/game/" + gameId);
         this.eventType = eventType;
         this.gameId = gameId;
     }

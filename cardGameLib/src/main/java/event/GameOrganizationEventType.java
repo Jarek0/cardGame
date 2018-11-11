@@ -1,5 +1,5 @@
 package event;
 
 public enum  GameOrganizationEventType {
-    PLAYER_JOINED, GAME_CLOSED
+    GAME_STARTED, GAME_CLOSED
 }

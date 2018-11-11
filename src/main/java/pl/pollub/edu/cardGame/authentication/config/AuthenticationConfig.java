@@ -85,12 +85,12 @@ public class AuthenticationConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public LogoutSuccessHandler logoutSuccessHandler() {
-        return new LogoutSuccessHandler();
+        return new LogoutSuccessHandler(gameDestroyer);
     }
 
     @Bean
     public SessionAuthenticationStrategy sessionAuthenticationStrategy() {
-        return new SessionAuthenticationStrategyImpl(sessionRegistry(), userLogoutNotifier);
+        return new SessionAuthenticationStrategyImpl(sessionRegistry(), userLogoutNotifier, gameDestroyer);
     }
 
     @Override

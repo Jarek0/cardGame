@@ -45,16 +45,17 @@ public class GameOrganizer {
     @Transactional
     public ResponseEntity organize() {
         gameDestroyer.destroyAllNotEndedGamesOfCurrentUser();
-        gameCreator.create();
+        Game game = gameCreator.create();
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(game.toResponse());
     }
 
     @PutMapping("/{gameId}")
     @Transactional
-    public void join(@PathVariable String gameId) {
+    public ResponseEntity join(@PathVariable String gameId) {
         gameDestroyer.destroyAllNotEndedGamesOfCurrentUser();
         appender.join(gameId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping

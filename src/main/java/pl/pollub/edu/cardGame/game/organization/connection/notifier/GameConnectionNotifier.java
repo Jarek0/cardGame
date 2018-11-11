@@ -1,10 +1,12 @@
 package pl.pollub.edu.cardGame.game.organization.connection.notifier;
 
 import event.GameClosedEvent;
-import event.PlayerJoinGameEvent;
+import event.GameStartedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -12,8 +14,10 @@ public class GameConnectionNotifier {
 
     private final SimpMessageSendingOperations sender;
 
-    public void notifyPlayerJoinToGame(PlayerJoinGameEvent event) {
-        sender.convertAndSendToUser(event.getFounderLogin(), event.getDestination(), event);
+    public void notifyPlayersGameStarted(List<GameStartedEvent> events) {
+        for(GameStartedEvent event : events) {
+            sender.convertAndSendToUser(event.getPlayerLogin(), event.getDestination(), event);
+        }
     }
 
     public void notifyPlayersGameClosed(GameClosedEvent event) {
