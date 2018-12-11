@@ -1,6 +1,6 @@
 package pl.pollub.edu.cardGame.authentication.config;
 
-import event.LogoutUserEvent;
+import event.authentication.LogoutUserEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.session.SessionInformation;

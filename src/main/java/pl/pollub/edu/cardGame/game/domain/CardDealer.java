@@ -1,7 +1,6 @@
-package pl.pollub.edu.cardGame.game.domain.card;
+package pl.pollub.edu.cardGame.game.domain;
 
 import lombok.RequiredArgsConstructor;
-import pl.pollub.edu.cardGame.game.domain.Player;
 
 import java.util.List;
 

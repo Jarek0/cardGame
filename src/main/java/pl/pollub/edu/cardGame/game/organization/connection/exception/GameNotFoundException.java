@@ -8,7 +8,6 @@ import static error.codes.ErrorCodes.GAME_NOT_FOUND;
 
 public class GameNotFoundException extends ObjectNotFoundException implements ExceptionWithCode {
 
-
     private GameNotFoundException(String msg) {
         super(GAME_NOT_FOUND, msg);
     }
@@ -17,8 +16,8 @@ public class GameNotFoundException extends ObjectNotFoundException implements Ex
         return new GameNotFoundException("Open game with id: " + gameId + " not found");
     }
 
-    public static GameNotFoundException gameWithAnyPlayer(String founderLogin) {
-        return new GameNotFoundException("Open game of " + founderLogin + " with any connected player not found");
+    public static GameNotFoundException startedGameNotFound(ObjectId gameId) {
+        return new GameNotFoundException("Started game with id: " + gameId + " not found");
     }
 
 }

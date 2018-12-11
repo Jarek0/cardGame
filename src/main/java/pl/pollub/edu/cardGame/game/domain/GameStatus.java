@@ -1,5 +1,5 @@
 package pl.pollub.edu.cardGame.game.domain;
 
 public enum GameStatus {
-    OPEN, STARTED, ENDED, CLOSED;
+    OPEN, STARTED, FINISHED, CLOSED;
 }

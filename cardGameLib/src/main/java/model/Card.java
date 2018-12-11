@@ -21,7 +21,19 @@ public class Card implements Serializable {
         return "card" + value.getName() + color.getName();
     }
 
-    public static Card of(CardColor color, CardValue value) {
-        return new Card(color, value);
+    public static Card of(CardColor color, CardValue strange) {
+        return new Card(color, strange);
+    }
+
+    public boolean isSameColor(Card card) {
+        return this.getColor().equals(card.getColor());
+    }
+
+    public boolean isSameStrange(Card card) {
+        return this.getStrange() == card.getStrange();
+    }
+
+    public int getStrange() {
+        return value.getValue();
     }
 }

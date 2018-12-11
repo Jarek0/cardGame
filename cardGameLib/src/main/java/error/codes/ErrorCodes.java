@@ -20,4 +20,6 @@ public final class ErrorCodes {
     public static final String GAME_IS_CLOSED = "game.organization.closed";
     public static final String GAME_IS_FULL = "game.organization.full";
 
+    public static final String PLAYER_NOT_FOUND = "player.notFound";
+
 }

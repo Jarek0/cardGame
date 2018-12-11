@@ -1,10 +1,10 @@
-package event;
+package event.game.organization;
 
 import lombok.*;
 
 import java.util.List;
 
-import static event.GameOrganizationEventType.GAME_CLOSED;
+import static event.game.organization.GameOrganizationEventType.GAME_CLOSED;
 
 @Data
 @NoArgsConstructor

@@ -1,6 +1,6 @@
 package pl.pollub.edu.cardGame.game.organization.destroyer;
 
-import event.GameClosedEvent;
+import event.game.organization.GameClosedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import pl.pollub.edu.cardGame.authentication.context.AuthenticationContext;

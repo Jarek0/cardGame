@@ -1,6 +1,5 @@
 package pl.pollub.edu.cardGame.game.repository;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import com.querydsl.core.types.dsl.StringPath;
 import org.bson.types.ObjectId;
@@ -24,6 +23,9 @@ public interface GameRepository extends MongoRepository<Game, ObjectId>, Queryds
 
     @Query(value = "{ 'status' : 'OPEN', '_id' : ?0 }")
     Optional<Game> findOpenById(ObjectId gameId);
+
+    @Query(value = "{ 'status' : 'STARTED', '_id' : ?0 }")
+    Optional<Game> findStartedById(ObjectId gameId);
 
     @Query(value = "{ 'status' : 'OPEN' }")
     Page<Game> findOpenGames(Pageable pageable);

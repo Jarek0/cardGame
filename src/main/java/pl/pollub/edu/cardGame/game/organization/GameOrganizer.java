@@ -6,7 +6,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.pollub.edu.cardGame.game.domain.Game;
@@ -18,7 +17,6 @@ import pl.pollub.edu.cardGame.game.organization.filter.GameFilter;
 import pl.pollub.edu.cardGame.game.repository.GameRepository;
 import response.PageResponse;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.isNull;
@@ -38,8 +36,6 @@ public class GameOrganizer {
     private final GameDestroyer gameDestroyer;
 
     private final PlayerAppender appender;
-
-    private final SessionRegistry sessionRegistry;
 
     @PostMapping
     @Transactional

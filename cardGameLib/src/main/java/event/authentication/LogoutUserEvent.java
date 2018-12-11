@@ -1,5 +1,6 @@
-package event;
+package event.authentication;
 
+import event.CardGameEvent;
 import lombok.*;
 
 @Data

@@ -1,11 +1,10 @@
-package pl.pollub.edu.cardGame.game.domain.card;
+package pl.pollub.edu.cardGame.game.domain;
 
 
 import model.Card;
 import model.CardColor;
-import pl.pollub.edu.cardGame.game.play.StackIsEmptyException;
+import pl.pollub.edu.cardGame.game.progress.exception.StackIsEmptyException;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,29 +17,47 @@ import static model.Card.of;
 
 public class CardStack {
 
-    public Card getCard() {
+    Card getCard() {
         Card card = cards.stream().findFirst().orElseThrow(StackIsEmptyException::new);
         cards.remove(0);
         return card;
     }
 
-    public List<Card> getCards(int cardsNumber) {
+    List<Card> getCards(Player player) {
+        int cardsCountForPlayer = player.cardsCountToFullHand();
+        if(cardsCountForPlayer > 0) {
+            return getCards(cardsCountForPlayer);
+        }
+        else {
+            return Collections.emptyList();
+        }
+    }
+
+    List<Card> getCards(int cardsCount) {
         if(this.cards.isEmpty()) throw new StackIsEmptyException();
-        List<Card> cards = this.cards.stream().limit(cardsNumber).collect(Collectors.toCollection(LinkedList::new));
+        List<Card> cards = this.cards.stream().limit(cardsCount).collect(Collectors.toCollection(LinkedList::new));
         this.cards.removeAll(cards);
         return cards;
     }
 
-    public Card getTrumpCard() {
+    Card getTrumpCard() {
         return cards.get(cards.size() - 1);
     }
 
-    public CardColor getTrump() {
+    CardColor getTrump() {
         return getTrumpCard().getColor();
     }
 
     void shuffleCards() {
         Collections.shuffle(cards);
+    }
+
+    boolean isEmpty() {
+        return cards.isEmpty();
+    }
+
+    int cardsCount() {
+        return cards.size();
     }
 
     private List<Card> cards = Stream.of(

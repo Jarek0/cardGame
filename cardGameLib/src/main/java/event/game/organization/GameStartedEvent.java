@@ -1,4 +1,4 @@
-package event;
+package event.game.organization;
 
 import lombok.*;
 import model.Card;
@@ -6,7 +6,7 @@ import model.Card;
 import java.util.ArrayList;
 import java.util.List;
 
-import static event.GameOrganizationEventType.GAME_STARTED;
+import static event.game.organization.GameOrganizationEventType.GAME_STARTED;
 
 @Data
 @NoArgsConstructor
@@ -20,11 +20,14 @@ public class GameStartedEvent extends GameOrganizationEvent {
 
     private Card trump;
 
-    public GameStartedEvent(String playerLogin, String gameId, List<Card> cards, Card trump) {
+    private boolean startFirst;
+
+    public GameStartedEvent(String playerLogin, String gameId, List<Card> cards, Card trump, boolean startFirst) {
         super(gameId, GAME_STARTED);
         this.playerLogin = playerLogin;
         this.cards = new ArrayList<>(cards);
         this.trump = trump;
+        this.startFirst = startFirst;
     }
 
 }

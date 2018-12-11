@@ -1,6 +1,6 @@
 package pl.pollub.edu.cardGame.game.organization.connection.appender;
 
-import event.GameStartedEvent;
+import event.game.organization.GameStartedEvent;
 import lombok.RequiredArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;
@@ -29,11 +29,12 @@ public class PlayerAppender {
                 .orElseThrow(() -> openGameNotFound(id));
 
         String currentUserLogin = authContext.getCurrentAuthLogin();
-        List<GameStartedEvent> events = game.joinPlayer(currentUserLogin);
+        if(game.canAnyoneJoin()) {
+            List<GameStartedEvent> events = game.joinPlayer(currentUserLogin);
 
-        repository.save(game);
-
-        notifier.notifyPlayersGameStarted(events);
+            repository.save(game);
+            notifier.notifyPlayersGameStarted(events);
+        }
     }
 
 }

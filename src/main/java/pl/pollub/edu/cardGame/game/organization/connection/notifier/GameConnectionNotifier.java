@@ -1,7 +1,7 @@
 package pl.pollub.edu.cardGame.game.organization.connection.notifier;
 
-import event.GameClosedEvent;
-import event.GameStartedEvent;
+import event.game.organization.GameClosedEvent;
+import event.game.organization.GameStartedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.stereotype.Component;
