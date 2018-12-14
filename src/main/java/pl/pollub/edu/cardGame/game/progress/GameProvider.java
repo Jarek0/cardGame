@@ -10,7 +10,7 @@ import pl.pollub.edu.cardGame.game.progress.defense.PlayerDefender;
 
 @RestController
 @Secured("ROLE_PLAYER")
-@RequestMapping("api/game/battle")
+@RequestMapping("/api/game/battle")
 @RequiredArgsConstructor
 public class GameProvider {
 

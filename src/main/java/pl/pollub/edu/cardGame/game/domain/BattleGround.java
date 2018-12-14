@@ -2,24 +2,24 @@ package pl.pollub.edu.cardGame.game.domain;
 
 import model.Card;
 import model.CardColor;
+import model.CardValue;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 class BattleGround {
-
-    private static final int TRUMP_VALUE = 9;
 
     private List<Card> cards = new LinkedList<>();
 
     boolean canCardAttack(Card card) {
-        return cards.isEmpty() || cards.stream().anyMatch(c -> c.isSameColor(card));
+        return cards.isEmpty() || cards.stream().anyMatch(c -> c.isSameValue(card));
     }
 
     boolean canCardDefense(Card card, CardColor trumpColor) {
         if(cards.isEmpty()) throw new IllegalStateException("Attack card not exists");
-        int cardValue = isCardTrump(card, trumpColor) ? card.getStrange() + TRUMP_VALUE : card.getStrange();
-        return getLastCard().getStrange() < cardValue;
+        return card.isStrangerThan(getLastCard(), trumpColor);
     }
 
     void putCard(Card card) {
@@ -34,8 +34,8 @@ class BattleGround {
 
     boolean isEmpty() { return cards.isEmpty(); }
 
-    private boolean isCardTrump(Card card, CardColor trumpColor) {
-        return card.getColor().equals(trumpColor);
+    Set<CardValue> valuesOnBattleGround() {
+        return cards.stream().map(Card::getValue).collect(Collectors.toSet());
     }
 
     private Card getLastCard() {

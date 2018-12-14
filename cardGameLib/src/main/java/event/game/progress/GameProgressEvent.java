@@ -3,7 +3,7 @@ package event.game.progress;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
-import event.game.GameEvent;
+import event.CardGameEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -20,9 +20,15 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = PlayerStopDefenseEvent.class, name = "PlayerStopDefenseEvent"),
         @JsonSubTypes.Type(value = GameFinishedEvent.class, name = "GameFinishedEvent")
 })
-public abstract class GameProgressEvent extends GameEvent {
+public abstract class GameProgressEvent extends CardGameEvent {
+
+    private String gameId;
+
+    private GameProgressEventType eventType;
 
     GameProgressEvent(String gameId, GameProgressEventType eventType) {
-        super(gameId, eventType);
+        super("/queue/game/" + gameId);
+        this.gameId = gameId;
+        this.eventType = eventType;
     }
 }

@@ -14,7 +14,7 @@ import static event.game.organization.GameOrganizationEventType.GAME_STARTED;
 @EqualsAndHashCode(callSuper = true)
 public class GameStartedEvent extends GameOrganizationEvent {
 
-    private String playerLogin;
+    private String destinationPlayer;
 
     private ArrayList<Card> cards;
 
@@ -22,9 +22,9 @@ public class GameStartedEvent extends GameOrganizationEvent {
 
     private boolean startFirst;
 
-    public GameStartedEvent(String playerLogin, String gameId, List<Card> cards, Card trump, boolean startFirst) {
+    public GameStartedEvent(String destinationPlayer, String gameId, List<Card> cards, Card trump, boolean startFirst) {
         super(gameId, GAME_STARTED);
-        this.playerLogin = playerLogin;
+        this.destinationPlayer = destinationPlayer;
         this.cards = new ArrayList<>(cards);
         this.trump = trump;
         this.startFirst = startFirst;

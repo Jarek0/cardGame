@@ -13,7 +13,7 @@ import static event.game.progress.GameProgressEventType.PLAYER_STOP_ATTACK;
 @Data
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
-public class PlayerStopAttackEvent extends GameProgressEvent {
+public class PlayerStopAttackEvent extends GameProgressEvent implements NextRoundEvent {
 
     private String destinationPlayer;
 
@@ -21,11 +21,17 @@ public class PlayerStopAttackEvent extends GameProgressEvent {
 
     private boolean firstNextRound;
 
-    public PlayerStopAttackEvent(String gameId, String destinationPlayer, List<Card> cards, boolean firstNextRound) {
+    private int stackCardsCount;
+
+    private int enemyCardsCount;
+
+    public PlayerStopAttackEvent(String gameId, String destinationPlayer, List<Card> cards, boolean firstNextRound, int stackCardsCount, int enemyCardsCount) {
         super(gameId, PLAYER_STOP_ATTACK);
         this.destinationPlayer = destinationPlayer;
         this.newCards = new ArrayList<>(cards);
         this.firstNextRound = firstNextRound;
+        this.stackCardsCount = stackCardsCount;
+        this.enemyCardsCount = enemyCardsCount;
     }
 
 }

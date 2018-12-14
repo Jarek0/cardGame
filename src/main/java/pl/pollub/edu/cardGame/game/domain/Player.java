@@ -12,7 +12,7 @@ import static model.RoundKind.*;
 @EqualsAndHashCode(of = {"login"})
 class Player {
 
-    private static final int CARDS_IN_HAND_COUNT = 5;
+    public static final int CARDS_IN_HAND_COUNT = 5;
 
     private String login;
 

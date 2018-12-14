@@ -14,11 +14,14 @@ public class PlayerAttackedEvent extends GameProgressEvent {
 
     private Card attackCard;
 
+    private int attackerCardsCount;
+
     private String defenderLogin;
 
-    public PlayerAttackedEvent(String gameId, String defenderLogin, Card attackCard) {
+    public PlayerAttackedEvent(String gameId, String defenderLogin, Card attackCard, int attackerCardsCount) {
         super(gameId, PLAYER_ATTACKED);
         this.defenderLogin = defenderLogin;
         this.attackCard = attackCard;
+        this.attackerCardsCount = attackerCardsCount;
     }
 }

@@ -7,14 +7,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CardDealer {
 
-    private final CardStack cardStack;
+    private final CardsStack cardsStack;
 
-    public CardStack dealCards(List<Player> players) {
-        cardStack.shuffleCards();
+    public CardsStack dealCards(List<Player> players) {
+        cardsStack.shuffleCards();
         for(Player player : players) {
-            player.addCards(cardStack.getCards(5));
+            player.addCards(cardsStack.getCards(5));
         }
 
-        return cardStack;
+        return cardsStack;
     }
 }

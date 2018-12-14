@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import event.CardGameEvent;
-import event.game.GameEvent;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,9 +17,15 @@ import lombok.NoArgsConstructor;
         @JsonSubTypes.Type(value = GameClosedEvent.class, name = "GameClosedEvent"),
         @JsonSubTypes.Type(value = GameStartedEvent.class, name = "GameStartedEvent")
 })
-public abstract class GameOrganizationEvent extends GameEvent {
+public abstract class GameOrganizationEvent extends CardGameEvent {
+
+    private String gameId;
+
+    private GameOrganizationEventType eventType;
 
     GameOrganizationEvent(String gameId, GameOrganizationEventType eventType) {
-        super(gameId, eventType);
+        super("/queue/game/" + gameId);
+        this.gameId = gameId;
+        this.eventType = eventType;
     }
 }

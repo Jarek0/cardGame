@@ -33,7 +33,7 @@ public class PlayerAttacker {
         String playerLogin = authContext.getCurrentAuthLogin();
 
         if(game.canAttack(playerLogin) && game.canCardAttack(attackCard)) {
-            if(game.didAttackerWonBeforeAttack()) {
+            if(game.didAttackerWinBeforeAttack()) {
                 List<GameFinishedEvent> events = game.finish(playerLogin);
                 gameFinishedNotifier.notifyGameFinished(events);
             }
@@ -52,14 +52,8 @@ public class PlayerAttacker {
         String playerLogin = authContext.getCurrentAuthLogin();
 
         if(game.canStopAttack(playerLogin)) {
-            if(game.didDefenderWonBeforeStopAttack()) {
-                List<GameFinishedEvent> events = game.finish(playerLogin);
-                gameFinishedNotifier.notifyGameFinished(events);
-            }
-            else {
-                List<PlayerStopAttackEvent> events = game.stopAttack();
-                attackNotifier.notifyPlayerStopAttack(events);
-            }
+            List<PlayerStopAttackEvent> events = game.stopAttack();
+            attackNotifier.notifyPlayerStopAttack(events);
         }
         gameRepository.save(game);
     }

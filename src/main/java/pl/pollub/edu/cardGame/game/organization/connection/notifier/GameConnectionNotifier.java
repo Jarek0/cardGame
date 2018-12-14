@@ -16,7 +16,7 @@ public class GameConnectionNotifier {
 
     public void notifyPlayersGameStarted(List<GameStartedEvent> events) {
         for(GameStartedEvent event : events) {
-            sender.convertAndSendToUser(event.getPlayerLogin(), event.getDestination(), event);
+            sender.convertAndSendToUser(event.getDestinationPlayer(), event.getDestination(), event);
         }
     }
 

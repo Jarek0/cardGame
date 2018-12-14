@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static pl.pollub.edu.cardGame.game.domain.GameStatus.*;
+import static pl.pollub.edu.cardGame.game.domain.Player.CARDS_IN_HAND_COUNT;
 
 @Document(collection = "Game")
 public class Game {
@@ -28,7 +29,7 @@ public class Game {
 
     private List<Player> players = new ArrayList<>();
 
-    private CardStack stack;
+    private CardsStack stack;
 
     private BattleGround battleGround;
 
@@ -54,7 +55,7 @@ public class Game {
 
         this.status = STARTED;
 
-        CardDealer cardDealer = new CardDealer(new CardStack());
+        CardDealer cardDealer = new CardDealer(new CardsStack());
         this.stack = cardDealer.dealCards(players);
 
         Card trump = stack.getTrumpCard();
@@ -120,58 +121,69 @@ public class Game {
         attacker.removeCard(attackCard);
         battleGround.putCard(attackCard);
         playerRoleSwitcher.switchRoundsAfterAttack(players);
-        return new PlayerAttackedEvent(id.toString(), getDefender().getLogin(), attackCard);
+        return new PlayerAttackedEvent(id.toString(), getDefender().getLogin(), attackCard, attacker.cardsCount());
     }
 
     public PlayerDefendedEvent defense(Card defenseCard) {
-        getDefender().removeCard(defenseCard);
+        Player defender = getDefender();
+        defender.removeCard(defenseCard);
         battleGround.putCard(defenseCard);
         playerRoleSwitcher.switchRoundsAfterDefense(players);
-        return new PlayerDefendedEvent(id.toString(), getAttacker().getLogin(), defenseCard);
+        return new PlayerDefendedEvent(id.toString(), getAttacker().getLogin(), defenseCard, defender.cardsCount(), battleGround.valuesOnBattleGround());
     }
 
-    public boolean didAttackerWonBeforeAttack() {
+    public boolean didAttackerWinBeforeAttack() {
         return stack.isEmpty() && getAttacker().hasLastCard();
     }
 
-    public boolean didDefenderWonBeforeDefense() {
+    public boolean didDefenderWinBeforeDefense() {
         return stack.isEmpty() && getDefender().hasLastCard();
     }
 
-    public boolean didDefenderWonBeforeStopAttack() {
-        return attackerNeedMoreOrEqCardsThanStack() && deffenderHaveLessCardsThanStackAndAttacker();
-    }
-
-    public boolean didAttackerWonBeforeStopDefense() {
-        return attackerNeedMoreOrEqCardsThanStack() && deffenderHaveMoreCardsThanStackAndAttacker();
-    }
-
     public List<PlayerStopAttackEvent> stopAttack() {
+        moveBattleCardsToCemetery();
         finishRound();
         playerRoleSwitcher.switchRoundsAfterStoppedAttack(players);
-        return players.stream()
-                .map(p -> new PlayerStopAttackEvent(id.toString(), p.getLogin(), p.getCards(), p.isAttacker()))
-                .collect(Collectors.toList());
+        List<PlayerStopAttackEvent> events = new ArrayList<>();
+        Player p1 = players.get(0);
+        Player p2 = players.get(1);
+        events.add(new PlayerStopAttackEvent(id.toString(), p1.getLogin(), p1.getCards(), p1.isAttacker(), stack.cardsCount(), p2.cardsCount()));
+        events.add(new PlayerStopAttackEvent(id.toString(), p2.getLogin(), p2.getCards(), p2.isAttacker(), stack.cardsCount(), p1.cardsCount()));
+        return events;
     }
 
     public List<PlayerStopDefenseEvent> stopDefense() {
+        moveBattleCardsToLostPlayer();
         finishRound();
         playerRoleSwitcher.switchRoundsAfterStoppedDefense(players);
-        return players.stream()
-                .map(p -> new PlayerStopDefenseEvent(id.toString(), p.getLogin(), p.getCards(), p.isAttacker()))
-                .collect(Collectors.toList());
+        List<PlayerStopDefenseEvent> events = new ArrayList<>();
+        Player p1 = players.get(0);
+        Player p2 = players.get(1);
+        events.add(new PlayerStopDefenseEvent(id.toString(), p1.getLogin(), p1.getCards(), p1.isAttacker(), stack.cardsCount(), p2.cardsCount()));
+        events.add(new PlayerStopDefenseEvent(id.toString(), p2.getLogin(), p2.getCards(), p2.isAttacker(), stack.cardsCount(), p1.cardsCount()));
+        return events;
+    }
+
+    private void moveBattleCardsToLostPlayer() {
+        List<Card> cardsFromFinishBattle = battleGround.finishBattle();
+        getDefender().addCards(cardsFromFinishBattle);
+    }
+
+    private void moveBattleCardsToCemetery(){
+        List<Card> cardsFromFinishBattle = battleGround.finishBattle();
+        cardsCemetery.addAll(cardsFromFinishBattle);
     }
 
     private void finishRound() {
-        cardsCemetery.addAll(battleGround.finishBattle());
+        for(Player player : players) {
+            getCardsForPlayer(player);
+        }
+    }
 
-        Player attacker = getAttacker();
-        List<Card> cardsForAttacker = stack.getCards(attacker);
-        attacker.addCards(cardsForAttacker);
-
-        Player defender = getDefender();
-        List<Card> cardsForDefender = stack.getCards(defender);
-        attacker.addCards(cardsForDefender);
+    private void getCardsForPlayer(Player player) {
+        int neededCards = player.cardsCountToFullHand();
+        List<Card> cardsForPlayer = stack.getCards(neededCards);
+        player.addCards(cardsForPlayer);
     }
 
     private Player getDefender() {
@@ -182,15 +194,4 @@ public class Game {
         return playerRoleSwitcher.getAttacker(players);
     }
 
-    private boolean deffenderHaveLessCardsThanStackAndAttacker() {
-        return getDefender().cardsCount() < getAttacker().cardsCountToFullHand() + stack.cardsCount();
-    }
-
-    private boolean deffenderHaveMoreCardsThanStackAndAttacker() {
-        return getDefender().cardsCount() > getAttacker().cardsCountToFullHand() + stack.cardsCount();
-    }
-
-    private boolean attackerNeedMoreOrEqCardsThanStack() {
-        return getAttacker().cardsCountToFullHand() <= stack.cardsCount();
-    }
 }

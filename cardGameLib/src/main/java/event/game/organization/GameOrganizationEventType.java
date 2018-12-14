@@ -1,7 +1,5 @@
 package event.game.organization;
 
-import event.game.GameEventType;
-
-public enum  GameOrganizationEventType implements GameEventType {
+public enum  GameOrganizationEventType {
     GAME_STARTED, GAME_CLOSED
 }

@@ -1,5 +1,6 @@
 package model;
 
+import command.CardGameCommand;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class Card implements Serializable {
+public class Card implements Serializable, CardGameCommand{
+
+    private static final int TRUMP_VALUE = 9;
 
     private CardColor color;
 
@@ -25,15 +28,19 @@ public class Card implements Serializable {
         return new Card(color, strange);
     }
 
-    public boolean isSameColor(Card card) {
-        return this.getColor().equals(card.getColor());
+    public boolean isSameValue(Card card) {
+        return value.getValue() == card.value.getValue();
     }
 
-    public boolean isSameStrange(Card card) {
-        return this.getStrange() == card.getStrange();
+    public boolean isStrangerThan(Card card, CardColor trump) {
+        return this.calculateStrange(trump) > card.calculateStrange(trump);
     }
 
-    public int getStrange() {
-        return value.getValue();
+    private boolean hasColor(CardColor color) {
+        return this.getColor().equals(color);
+    }
+
+    private int calculateStrange(CardColor trump) {
+        return hasColor(trump) ? value.getValue() + TRUMP_VALUE : value.getValue();
     }
 }

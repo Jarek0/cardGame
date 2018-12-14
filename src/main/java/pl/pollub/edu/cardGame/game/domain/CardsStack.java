@@ -15,7 +15,9 @@ import static model.CardColor.*;
 import static model.CardValue.*;
 import static model.Card.of;
 
-public class CardStack {
+public class CardsStack {
+
+    private Card trump;
 
     Card getCard() {
         Card card = cards.stream().findFirst().orElseThrow(StackIsEmptyException::new);
@@ -23,25 +25,15 @@ public class CardStack {
         return card;
     }
 
-    List<Card> getCards(Player player) {
-        int cardsCountForPlayer = player.cardsCountToFullHand();
-        if(cardsCountForPlayer > 0) {
-            return getCards(cardsCountForPlayer);
-        }
-        else {
-            return Collections.emptyList();
-        }
-    }
-
     List<Card> getCards(int cardsCount) {
-        if(this.cards.isEmpty()) throw new StackIsEmptyException();
+        if(cardsCount <= 0 || this.cards.isEmpty()) return Collections.emptyList();
         List<Card> cards = this.cards.stream().limit(cardsCount).collect(Collectors.toCollection(LinkedList::new));
         this.cards.removeAll(cards);
         return cards;
     }
 
     Card getTrumpCard() {
-        return cards.get(cards.size() - 1);
+        return trump;
     }
 
     CardColor getTrump() {
@@ -50,6 +42,7 @@ public class CardStack {
 
     void shuffleCards() {
         Collections.shuffle(cards);
+        trump = cards.get(cards.size() - 1);
     }
 
     boolean isEmpty() {
