@@ -11,6 +11,7 @@ public final class ErrorCodes {
     public static final String UNAUTHORIZED_REQ = "unauthorized";
 
     public static final String LOGIN_TOO_SHORT = "registration.validation.login.tooShort";
+    public static final String LOGIN_INVALID_FORMAT = "registration.validation.login.invalidFormat";
     public static final String LOGIN_ALREADY_USED = "registration.validation.login.alreadyUsed";
     public static final String PASSWORD_NOT_MATCH = "password.validation.notMatch";
     public static final String PASSWORD_TOO_SHORT = "password.validation.tooShort";

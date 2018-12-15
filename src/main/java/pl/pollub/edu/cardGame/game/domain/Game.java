@@ -73,10 +73,15 @@ public class Game {
         return new GameClosedEvent(playerLogins, this.id.toString());
     }
 
-    public List<GameFinishedEvent> finish(String winnerLogin) { //change winnerLogin
+    public List<GameFinishedEvent> finish(String winnerLogin) {
         this.status = FINISHED;
+        Player lostPlayer = players.stream()
+                .filter(p -> !p.getLogin().equals(winnerLogin))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("Second player in game with id: " + id + " not exists!"));
+        int winnerPoints = lostPlayer.getCards().stream().mapToInt(e -> e.calculateStrange(stack.getTrump())).sum();
         return players.stream()
-                .map(p -> new GameFinishedEvent(id.toString(), winnerLogin, p.getLogin()))
+                .map(p -> new GameFinishedEvent(id.toString(), winnerLogin, p.getLogin(), winnerPoints))
                 .collect(Collectors.toList());
     }
 

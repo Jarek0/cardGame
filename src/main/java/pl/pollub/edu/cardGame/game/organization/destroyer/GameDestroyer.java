@@ -22,19 +22,19 @@ public class GameDestroyer {
 
     public void destroyAllNotEndedGamesOfCurrentUser() {
         String currentLogin = authContext.getCurrentAuthLogin();
-        List<Game> games = gameRepository.findNotEndedByPlayerLogin(currentLogin);
+        List<Game> games = gameRepository.findNotFinishedByPlayerLogin(currentLogin);
         gameRepository.deleteAll(games);
         closeGames(games);
     }
 
     public void destroyAllNotEndedGames(String login) {
-        List<Game> games = gameRepository.findNotEndedByPlayerLogin(login);
+        List<Game> games = gameRepository.findNotFinishedByPlayerLogin(login);
         gameRepository.deleteAll(games);
         closeGames(games);
     }
 
     public void destroyAllNotEndedGames() {
-        List<Game> games = gameRepository.findNotEnded();
+        List<Game> games = gameRepository.findNotFinished();
         gameRepository.deleteAll(games);
         closeGames(games);
     }

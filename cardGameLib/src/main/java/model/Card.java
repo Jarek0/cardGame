@@ -36,11 +36,12 @@ public class Card implements Serializable, CardGameCommand{
         return this.calculateStrange(trump) > card.calculateStrange(trump);
     }
 
+    public int calculateStrange(CardColor trump) {
+        return hasColor(trump) ? value.getValue() + TRUMP_VALUE : value.getValue();
+    }
+
     private boolean hasColor(CardColor color) {
         return this.getColor().equals(color);
     }
 
-    private int calculateStrange(CardColor trump) {
-        return hasColor(trump) ? value.getValue() + TRUMP_VALUE : value.getValue();
-    }
 }

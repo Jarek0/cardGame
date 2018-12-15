@@ -15,10 +15,13 @@ public class GameFinishedEvent extends GameProgressEvent {
 
     private String destinationPlayer;
 
-    public GameFinishedEvent(String gameId, String winnerLogin, String destinationPlayer) {
+    private int points;
+
+    public GameFinishedEvent(String gameId, String winnerLogin, String destinationPlayer, int points) {
         super(gameId, GAME_FINISHED);
         this.winnerLogin = winnerLogin;
         this.destinationPlayer = destinationPlayer;
+        this.points = points;
     }
 
 }

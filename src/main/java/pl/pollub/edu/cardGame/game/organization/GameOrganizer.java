@@ -28,7 +28,6 @@ import static pl.pollub.edu.cardGame.game.domain.GameStatus.OPEN;
 @RequiredArgsConstructor
 public class GameOrganizer {
 
-
     private final GameCreator gameCreator;
 
     private final GameRepository gameRepository;

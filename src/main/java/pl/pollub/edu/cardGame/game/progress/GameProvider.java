@@ -3,6 +3,7 @@ package pl.pollub.edu.cardGame.game.progress;
 import lombok.RequiredArgsConstructor;
 import model.Card;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import pl.pollub.edu.cardGame.game.progress.attack.PlayerAttacker;
 import pl.pollub.edu.cardGame.game.progress.defense.PlayerDefender;
@@ -12,6 +13,7 @@ import pl.pollub.edu.cardGame.game.progress.defense.PlayerDefender;
 @Secured("ROLE_PLAYER")
 @RequestMapping("/api/game/battle")
 @RequiredArgsConstructor
+@Transactional
 public class GameProvider {
 
     private final PlayerAttacker playerAttacker;

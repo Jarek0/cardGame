@@ -24,17 +24,14 @@ public interface GameRepository extends MongoRepository<Game, ObjectId>, Queryds
     @Query(value = "{ 'status' : 'OPEN', '_id' : ?0 }")
     Optional<Game> findOpenById(ObjectId gameId);
 
-    @Query(value = "{ 'status' : 'STARTED', '_id' : ?0 }")
-    Optional<Game> findStartedById(ObjectId gameId);
-
     @Query(value = "{ 'status' : 'OPEN' }")
     Page<Game> findOpenGames(Pageable pageable);
 
-    @Query(value = "{ 'status' : { $ne : 'ENDED' }, 'players' : { $elemMatch : { 'login' : ?0 } } }")
-    List<Game> findNotEndedByPlayerLogin(String playerLogin);
+    @Query(value = "{ 'status' : { $ne : 'FINISHED' }, 'players' : { $elemMatch : { 'login' : ?0 } } }")
+    List<Game> findNotFinishedByPlayerLogin(String playerLogin);
 
-    @Query(value = "{ 'status' : { $ne : 'ENDED' } }")
-    List<Game> findNotEnded();
+    @Query(value = "{ 'status' : { $ne : 'FINISHED' } }")
+    List<Game> findNotFinished();
 
     @Override
     default void customize(QuerydslBindings bindings, QGame root) {

@@ -11,6 +11,7 @@ import pl.pollub.edu.cardGame.authentication.context.AuthenticationContext;
 import pl.pollub.edu.cardGame.game.domain.Game;
 import pl.pollub.edu.cardGame.game.progress.notifier.PlayerDefendedNotifier;
 import pl.pollub.edu.cardGame.game.progress.notifier.GameFinishedNotifier;
+import pl.pollub.edu.cardGame.game.ranking.RankingPositionService;
 import pl.pollub.edu.cardGame.game.repository.GameRepository;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class PlayerDefender {
     private final GameRepository gameRepository;
     private final PlayerDefendedNotifier defendedNotifier;
     private final GameFinishedNotifier gameFinishedNotifier;
+    private final RankingPositionService rankingPositionService;
 
     public void defense(String gameId, Card defenseCard) {
         ObjectId id = new ObjectId(gameId);
@@ -35,6 +37,7 @@ public class PlayerDefender {
         if(game.canDefense(playerLogin) && game.canCardDefense(defenseCard)) {
             if(game.didDefenderWinBeforeDefense()) {
                 List<GameFinishedEvent> events = game.finish(playerLogin);
+                rankingPositionService.addPointsForPlayer(events.get(0));
                 gameFinishedNotifier.notifyGameFinished(events);
             }
             else {
@@ -55,6 +58,7 @@ public class PlayerDefender {
             List<PlayerStopDefenseEvent> events = game.stopDefense();
             defendedNotifier.notifyPlayerStopDefense(events);
         }
+
         gameRepository.save(game);
     }
 
