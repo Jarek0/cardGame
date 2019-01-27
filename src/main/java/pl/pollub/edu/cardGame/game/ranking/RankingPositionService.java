@@ -5,9 +5,9 @@ import event.game.progress.GameFinishedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import pl.pollub.edu.cardGame.authentication.domain.Authentication;
 import response.PageResponse;
 import response.RankingPositionResponse;
 
@@ -29,6 +29,15 @@ public class RankingPositionService {
                 .orElseGet(() -> new RankingPosition(winnerLogin));
         rankingPosition.addPoints(event.getPoints());
         repository.save(rankingPosition);
+    }
+
+    @Transactional
+    public void changePlayerLoginForPositions(Authentication playerToChangeLogin, String newLogin) {
+        List<RankingPosition> rankingPositions = repository.findAllByPlayerLogin(playerToChangeLogin.getUsername());
+        for(RankingPosition rankingPosition : rankingPositions) {
+            rankingPosition.setPlayerLogin(newLogin);
+        }
+        repository.saveAll(rankingPositions);
     }
 
     @Transactional(readOnly = true)

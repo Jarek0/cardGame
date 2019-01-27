@@ -7,6 +7,7 @@ import pl.pollub.edu.cardGame.authentication.domain.Authentication;
 import pl.pollub.edu.cardGame.authentication.register.exception.LoginAlreadyUsedException;
 import pl.pollub.edu.cardGame.authentication.register.login.validator.LoginValidator;
 import pl.pollub.edu.cardGame.authentication.repository.AuthenticationRepository;
+import pl.pollub.edu.cardGame.game.ranking.RankingPositionService;
 
 
 @Service
@@ -19,6 +20,8 @@ public class LoginChanger {
 
     private final LoginValidator validator;
 
+    private final RankingPositionService rankingPositionService;
+
     public boolean isNotUsed(String login) {
 
         if(validator.isLoginAlreadyUsed(login)) {
@@ -30,6 +33,7 @@ public class LoginChanger {
 
     public void changeCurrentLogin(String login) {
         Authentication auth = context.getCurrentAuth();
+        rankingPositionService.changePlayerLoginForPositions(auth, login);
         auth.changeLogin(login);
         repository.save(auth);
     }

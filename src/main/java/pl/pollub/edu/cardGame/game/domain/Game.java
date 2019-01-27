@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static pl.pollub.edu.cardGame.game.domain.GameStatus.*;
-import static pl.pollub.edu.cardGame.game.domain.Player.CARDS_IN_HAND_COUNT;
 
 @Document(collection = "Game")
 public class Game {
@@ -63,8 +62,16 @@ public class Game {
         battleGround = new BattleGround();
 
         return players.stream()
-                .map(p -> new GameStartedEvent(p.getLogin(), id.toString(), p.getCards(), trump, p.isAttacker()))
+                .map(p -> new GameStartedEvent(
+                        p.getLogin(),
+                        getEnemyLogin(p),
+                        id.toString(), p.getCards(), trump, p.isAttacker()))
                 .collect(Collectors.toList());
+    }
+
+    private String getEnemyLogin(Player p) {
+        //noinspection ConstantConditions
+        return players.stream().filter(p1 -> !p1.getLogin().equals(p.getLogin())).findFirst().get().getLogin();
     }
 
     public GameClosedEvent close() {
